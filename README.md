@@ -1,2 +1,5 @@
 # session-maker
-vim plugin
+vim plugin what to do make session & load it
+
+# develop
+feature: show session's list
