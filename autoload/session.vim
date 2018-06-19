@@ -152,8 +152,13 @@ endfunction
 
 function! session#list()
    let path = expand(g:session.banker) . '*'
-   let s = glob(path, v:false, v:true)
-   echo s
+   let spath = glob(path, v:false, v:true)
+   call filter(spath, 'v:val !~# ".*\.quickfix"')
+   call filter(spath, 'v:val !~# ".*\.viminfo"')
+   call map(spath, 'fnamemodify(v:val, ":t")')
+   for s in spath
+      echo s
+   endfor
 endfunction
 
 
