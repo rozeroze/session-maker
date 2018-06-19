@@ -60,7 +60,7 @@ else
    endif
    " list -opts
    if !exists('g:session.topt.list')
-      let g:session.topt.load = ['list', '-list']
+      let g:session.topt.list = ['list', '-list']
    endif
    " default-name
    if !exists('g:session.defaultname')
