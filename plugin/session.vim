@@ -3,7 +3,7 @@
 " Summary: session make
 " Authors: rozeroze <rosettastone1886@gmail.com>
 " License: MIT
-" Last Change: 2018 Feb 10
+" Version: 2018-06-19
 
 
 if exists('g:loaded_session_maker')
