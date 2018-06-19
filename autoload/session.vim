@@ -3,7 +3,7 @@
 " Summary: session make
 " Authors: rozeroze <rosettastone1886@gmail.com>
 " License: MIT
-" Last Change: 2018 Feb 10
+" Version: 2018-06-19
 
 
 function! session#session(...)
@@ -89,13 +89,28 @@ function! session#make(args)
    let path = expand(g:session.banker . name)
    execute 'mksession! ' . path
    if g:session.viminfo
-      let name .= '.viminfo'
-      if !session#makable(name)
+      let vname = name . '.viminfo'
+      if session#makable(vname)
+         let path = expand(g:session.banker . vname)
+         execute 'wviminfo! ' . path
+      else
          echo 'error: permission denied. cannot make viminfo file. -session.vim'
-         return
       endif
-      let path = expand(g:session.banker . name)
-      execute 'wviminfo! ' . path
+   endif
+   if g:session.quickfix
+      let qname = name . '.quickfix'
+      if session#makable(qname)
+         let path = expand(g:session.banker . qname)
+         let qflist = getqflist()
+         for qf in qflist
+            let qf.filename = fnamemodify(bufname(qf.bufnr), ':p')
+            unlet qf.bufnr
+         endfor
+         call map(qflist, 'string(v:val)')
+         call writefile(qflist, path)
+      else
+         echo 'error: permission denied. cannot make quickfix file. -session.vim'
+      endif
    endif
    echo 'code: make session file is complete! -session.vim'
 endfunction
@@ -113,13 +128,24 @@ function! session#load(args)
    let path = expand(g:session.banker . name)
    execute 'source ' . path
    if g:session.viminfo
-      let name .= '.viminfo'
-      if !session#loadable(name)
+      let vname .= '.viminfo'
+      if session#loadable(vname)
+         let path = expand(g:session.banker . vname)
+         execute 'rviminfo! ' . path
+      else
          echo 'error: permission denied. cannot load viminfo file. -session.vim'
-         return
       endif
-      let path = expand(g:session.banker . name)
-      execute 'rviminfo! ' . path
+   endif
+   if g:session.quickfix
+      let qname = name . '.quickfix'
+      if session#loadable(qname)
+         let path = expand(g:session.banker . qname)
+         let qflist = readfile(path)
+         call map(qflist, 'eval(v:val)')
+         call setqflist(qflist)
+      else
+         echo 'error: permission denied. cannot load quickfix file. -session.vim'
+      endif
    endif
    echo 'code: load session file is complete! -session.vim'
 endfunction
